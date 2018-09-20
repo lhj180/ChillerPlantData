@@ -1,0 +1,33 @@
+{% extends 'blog_base.html' %}
+{% load staticfiles %}
+
+{% block title %}
+    我的网站|按月分类{{ with_date }}
+
+{% endblock %}
+
+{% block header_extends %}
+    <link rel="stylesheet" type="text/css" href="{% static 'home.css'%}">
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+{% endblock %}
+
+{% block nav_system_active %}active{% endblock %}
+
+{% block report_left_title %}日期归档：{{ with_date }} &nbsp 共{{report_count}}条{% endblock %}
+
+{% block alert_content %}
+<div class="panel panel-default">
+    <div class="panel-heading">选择日期 </div>
+    <div class="panel-body">
+        <form action="{% url 'click_with_date' %}" method = "POST" >
+            {% csrf_token %}
+            <span>起始日期</span><input type="date" class="form-control" name ="start_date"> 
+            <span>终止日期</span><input type="date" class="form-control" name = "end_date">
+            <button type="submit" class="btn btn-default">确定</button>
+        </form>
+
+
+{% endblock %}
+
+
+

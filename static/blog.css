@@ -1,0 +1,64 @@
+
+div.paginator {
+    text-align: center;
+}
+div.blog:not(:last-child) {
+    margin-bottom: 2em;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 1em;
+
+}
+div.panel-heading h3{
+    color:#333;
+    margin-bottom:0.3em;
+}
+
+div.panel-heading h4{
+    color:#333;
+    margin-top:0.3em;
+    margin-bottom:0.3em;
+}
+
+div.report h3{
+    margin-top:0.5em;
+}
+
+div.report_info{
+    margin-bottom: 1em;
+
+}
+div.alert h3{
+    margin-top:0.5em;
+}
+
+div.alert_info{
+    margin-bottom: 1em;
+
+}
+p.alert_temp{
+    color:red;
+
+}
+p.alert_press{
+    color:red;
+
+}
+
+
+ul.blog_info_description{
+    list-style-type:none;
+    margin-bottom:1em;
+}
+
+ul.blog_info_description li{
+    display:inline-block;
+    margin-right: 2em;
+}
+
+div.blog_content{
+    margin-bottom: 1em;
+}
+
+div.more_blog{
+    margin-top: 2em;
+}

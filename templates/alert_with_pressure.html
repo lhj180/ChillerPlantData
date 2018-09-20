@@ -1,0 +1,58 @@
+{% extends 'blog_base.html' %}
+{% load staticfiles %}
+
+{% block title %}
+    我的网站|温度报警
+
+{% endblock %}
+
+{% block header_extends %}
+    <link rel="stylesheet" type="text/css" href="{% static 'home.css'%}">
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <meta http-equiv="refresh" content="60">
+{% endblock %}
+
+{% block nav_alert_press_active %}active{% endblock %}
+
+{% block report_left_title %}温度报警2{% endblock %}
+
+{% block alert_detail %}
+
+    <!--保留两位小数 -->
+    <p>报警原因：回风温度超过28 C：</p> <p class = "alert_press">{{ report.return_temperature| floatformat }}  </p>
+                
+
+{% endblock %}
+
+{% block alert_content %}
+    <div class="panel panel-default">
+        <div class="panel-heading">{% block alert_right_title %}报警日期归档{% endblock %}</div>
+        <div class="panel-body">
+            <div id="container" ></div>
+            <script>
+                var options = {
+                    chart: { type: 'bar' },
+                    title: { text: null },
+                    xAxis: { categories: {{date_time|safe}},
+                             tickmarkPlacement:'on', },
+                    yAxis: { title: {text: null},
+                             labels:{ enabled:false},
+                             gridLineDashStyle: 'Dash', 
+                            },
+                    series: [{ name: '报警数量', data: {{date_count}} }],
+                    plotOptions:{
+                        line:{
+                            dataLabels:{
+                                enabled:true
+                            }
+                        }
+                    },
+                    legend: { enabled:false },
+                    credits: { enabled:false },
+                };
+                var chart = Highcharts.chart('container', options);
+            </script>
+        </div>
+    </div>
+
+{% endblock %}

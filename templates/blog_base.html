@@ -1,0 +1,183 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %} {% endblock %}</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'blog_base.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'bootstrap_3.3.7/css/bootstrap.min.css' %}">
+    <script type="text/javascript" src="{% static 'jquery_1.12.4.min.js' %}"></script>
+    <script type="text/javascript" src = "{% static 'bootstrap_3.3.7/js/bootstrap.min.js' %}"></script>
+    
+
+    {% block header_extends %} {% endblock %}
+</head>
+<body>
+    <div class="navbar navbar-default navbar-fixed-top" role = "navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <li class = "{% block nav_home_active %}{% endblock %}"><a class = "navbar-brand" href = "/" >模板网站
+                </a></li>
+                <button class="navbar-toggle collapsed" data-toggle = "collapse" data-target = "#navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+            <div id="navbar-collapse" class="collapse navbar-collapse">
+                <ul class="nav navbar-nav">
+                    <li class = "{% block nav_report_list_active %}{% endblock %}"><a href="{% url 'report_list' %}">历史记录</a></li>
+                    {%for plant_name in plant_names %}
+                        {% if plant_name == 'N1' %}
+                            <li class = "{% block nav_system1_active %}{% endblock %}"><a href="{% url 'plant_system' plant_name %}">{{ plant_name }}</a></li>
+                        {% elif plant_name == 'N2' %}
+                            <li class = "{% block nav_system2_active %}{% endblock %}"><a href="{% url 'plant_system' plant_name %}">{{ plant_name }}</a></li>
+                        {% endif %}
+                    {% endfor %}
+                    <li class = "{% block nav_alert_temp_active %}{% endblock %}"><a href="{% url 'alert_with_temperature1' %}">温度报警1</a></li>
+                    <li class = "{% block nav_alert_press_active %}{% endblock %}"><a href="{% url 'alert_with_temperature2' %}">温度报警2</a></li>
+ 
+                </ul>
+            </div>
+        </div>
+    </div>
+
+{% block content %}
+    
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12 col-sm-7 col-md-8 col-lg-8">
+                <div class="panel panel-default">
+                    <div class="panel-heading"><h3>{% block report_left_title %}报告列表{% endblock %}</h3></div>
+                    <div class="panel-body">
+                        {% for report in page_of_reports.object_list %}
+                            <div class = "report">
+                                <h3><a href="{% url 'report_detail' report.id%}">{{report.plant_name}}({{ report.datetime| date:"Y年m月d日"}})</a></h3>
+                                <div class="report_info">
+                                    <!--保留两位小数 -->
+                                    {% block alert_detail %}{% endblock %}
+                                    <p>室外温度{{ report.outdoor_temperature| floatformat }} (℃)  &nbsp 室内出口温度{{ report.indoor_temperature| floatformat }} (℃)</p>
+                                    <p>送风温度{{ report.supply_temperature| floatformat }} (℃)  &nbsp 回风温度{{ report.return_temperature| floatformat }} (℃)</p> 
+
+                                    <hr>
+                                </div>
+                            </div>
+                        {% endfor %} 
+                    </div>
+                </div>
+                    <div class = "paginator" aria-label = "Page navigation">
+                        <ul class="pagination">
+                            {# 上一页 #}
+                            <li>
+                                {% if page_of_reports.has_previous %}
+                                    <a href="?page={{page_of_reports.previous_page_number}}" aria-label = "Previous">
+                                        <span aria-hidden = "true"> &laquo;</span>
+                                    </a>
+                                {% else %}
+                                    <span aria-hidden = "true"> &laquo;</span>
+                                {% endif %}  
+                            </li>
+                            {# 全部页码 #}
+
+                            {% for page_num in page_range %}
+                                {% if page_num == page_of_reports.number %}
+                                    <li class = "active"><a href="?page={{page_num}}">{{page_num}}</a></li>
+                                {% else %}
+                                    {% if page_num == '...' %}
+                                        <li><span>{{page_num}}</span></li>
+                                    {% else %}
+                                        <li><a href="?page={{page_num}}">{{page_num}}</a></li>
+                                    {% endif %}
+                                {% endif %}
+                                
+                            {% endfor %}
+                            {# 下一页 #}
+                            <li>
+                                {% if page_of_blogs.has_next %}
+                                    <a href="?page={{page_of_reports.next_page_number}}" aria-label = "Next">
+                                        <span aria-hidden = "true"> &raquo;</span>
+                                    </a>
+                                {% else %}
+                                    <span aria-hidden = "true"> &raquo;</span>
+                                {% endif %}
+                            </li>
+                        </ul>
+                        <p>
+                            一共有{{page_of_reports.paginator.count}}条消息,
+                            当前第{{page_of_reports.number}}页，
+                            共{{page_of_reports.paginator.num_pages}}页
+                        </p>
+                    </div>
+            </div>
+            
+            <div class="hidden-xs col-sm-5 col-md-4 col-lg-4">
+                <!--<div class="panel panel-default">
+                    <div class="panel-heading"><h4>博客分类</h4></div>
+                    <div class="panel-body">
+                        <ul class = "blog_types" >
+                            {% for blog_type in blog_types %}
+                                <li><a href ="{% url 'blogs_with_type' blog_type.pk %}">{{blog_type.type_name}}({{blog_type.blog_count}})</a></li>
+                            {% empty %}
+                                <li>暂无分类</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>-->
+                    
+                <div class="panel panel-default">
+                    <div class="panel-heading">当前时间 &nbsp {{current_time|date:"Y-m-d"}}</div>
+                    <div class="panel-body">
+                        {% if user.is_authenticated %}
+                            您好，{{user}} &nbsp
+                            <a href = "{% url 'logout' %}">
+                                {% csrf_token %}
+                                <!--<input type="button" value = "注销" >-->
+                                <button type="submit" class="btn btn-default">注销</button>
+                            </a>
+                        {% else %}
+                            未登录
+                            <form action="{% url 'login' %}" method = "POST" >
+                                {% csrf_token %}
+                                <span>用户名</span><input type="text" class="form-control" name="username"> 
+                                <span>密码</span><input type="password" class="form-control" name = "password">
+                                <button type="submit" class="btn btn-default">登录</button>
+                            </form>
+                            <a href = "{% url 'userRegister' %}">
+                                {% csrf_token %}
+                                <!--<input type="button" value = "注册" >-->
+                                <button type="submit" class="btn btn-default">注册</button>
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">{% block report_right_title %}报告日期归档{% endblock %}</div>
+                    <div class="panel-body">
+                        <ul class="report_dates">
+                            {% for date in date_list %}
+                                <a href="{% url 'each_month' date.date.year date.date.month %}">时间： {{date.date.year}}年 {{date.date.month}}月</a>
+                                <p>({{ date.count }}条消息)</p>
+                                <hr>
+                            {% endfor %}
+                                
+                        </ul>
+                    </div>
+                </div>
+                {% block alert_content %}{% endblock %}
+                {% block click_date_content %}{% endblock %}
+                
+            </div>
+        </div>
+    </div>
+
+
+  
+{% endblock %}
+{% block following_content %}
+{% endblock %}
+
+</body>
+</html>

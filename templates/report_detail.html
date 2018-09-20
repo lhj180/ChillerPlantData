@@ -1,0 +1,84 @@
+{% extends 'blog_base.html' %}
+{% load staticfiles %}
+
+{% block title %}{{ report.sys_name }}{{ report.sys_time|date:"Y-m-d G:n:s"}}{% endblock %}
+
+
+{% load staticfiles %}
+{% block header_extends %} 
+    <link rel="stylesheet" type="text/css" href="{% static 'home.css'%}">
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+{% endblock %}
+{% block nav_report_list_active %}active{% endblock %}
+
+{% block content %} 
+    <div class="container">
+            
+        <div class="row">
+            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading"><h3>{% block report_left_title %}报警细节{% endblock %}</h3></div>
+                    <div class="panel-body">
+                        <div class="blog_content">
+                            <ul class="blog_info_description">
+                                <li>{{ report.plant_name }}</li>
+                                <li>时间：{{  report.datetime| date:"Y-m-d G:n:s"}}</li> 
+                            </ul>
+                            <p>indoor_t: &nbsp {{ report.indoor_temperature | floatformat }} (℃)</p>
+                            <p>outdoor_t: &nbsp {{ report.outdoor_temperature | floatformat }} (℃)</p>
+                            <p>supply_t: &nbsp {{ report.supply_temperature | floatformat }} (℃)</p>
+                            <p>return_t: &nbsp {{ report.return_temperature | floatformat }} (℃)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="hidden-xs col-sm-6 col-md-6 col-lg-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading"><h3>{% block report_right_title %}报警细节(℃){% endblock %}</h3></div>
+                    <div class="panel-body">
+                        
+                        <div id="container" ></div>
+
+                            <script>
+                                Highcharts.setOptions({
+                                chart: { type: 'column' },
+                                    
+                                    plotOptions:{
+                                        line:{
+                                            dataLabels:{
+                                                enabled:true
+                                            }
+                                        }
+                                    },
+                                    legend:{ borderWidth:1 },
+                                    credits: { enabled:false },
+                                    labels: { enabled:false },
+                            });
+                                
+                                var container = Highcharts.chart('container', {
+                                    title: { text: '{{report.plant_name}}' },
+                                    xAxis: { title: {text: '时间(月/日/时)'}, 
+                                             categories: {{xtext|safe}},
+                                             tickmarkPlacement:'on', },
+                                    yAxis: { title: {text: '温度(℃)'},
+                                             
+                                             gridLineDashStyle: 'Dash', 
+                                            },
+                                    series: [{ 
+                                        name: '温度', data: {{yvalue|safe}} 
+                                    }],
+                                });
+                                
+                            </script>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+       
+
+{% endblock %}
+
+
+

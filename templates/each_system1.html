@@ -1,0 +1,23 @@
+{% extends 'blog_base.html' %}
+{% load staticfiles %}
+
+{% block title %}
+    我的网站|空调系统{{ sys_name }}
+
+{% endblock %}
+
+{% block header_extends %}
+    <link rel="stylesheet" type="text/css" href="{% static 'home.css'%}">
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+{% endblock %}
+
+{% block nav_system1_active %}active{% endblock %}
+
+
+
+
+{% block report_left_title %}空调系统{{ sys_name }}{% endblock %}
+
+
+
+

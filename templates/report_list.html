@@ -1,0 +1,46 @@
+{% extends 'blog_base.html' %}
+{% load staticfiles %}
+
+{% block title %}
+    我的网站|报告清单
+
+{% endblock %}
+
+{% block header_extends %}
+    <link rel="stylesheet" type="text/css" href="{% static 'home.css'%}">
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+{% endblock %}
+
+{% block nav_report_list_active %}active{% endblock %}
+
+
+{% block alert_content %}
+    <div class="panel panel-default">
+        <div class="panel-heading">创建报告</div>
+        <div class="panel-body">
+            {% if not user.is_authenticated %}
+                登录之后显示功能
+                
+            {% else %}
+                管理员可操作
+                {% for result in exist_result %}
+                    {{result.id}}
+                {% endfor %}
+                {% for result in datelist %}
+                    {{result}}
+                {% endfor %}
+                <form action="{% url 'create_report' %}" method = "POST" >
+                    {% csrf_token %}
+                    <span>站点</span><input type="text" class="form-control" name="plant_name"> 
+                    <span>室内温度(℃)</span><input type="text" class="form-control" name = "indoor_temperature">
+                    <span>室外温度(℃)</span><input type="text" class="form-control" name="outdoor_temperature"> 
+                    <span>送风温度(℃)</span><input type="text" class="form-control" name = "supply_temperature">
+                    <span>回风温度(℃)</span><input type="text" class="form-control" name = "return_temperature">
+                    <button type="submit" class="btn btn-default">创建</button>
+                </form>
+                
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}              
+

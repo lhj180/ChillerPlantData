@@ -1,0 +1,48 @@
+{% extends 'with_date.html' %}
+{% load staticfiles %}
+
+{% block title %}
+    我的网站|选择日期
+
+{% endblock %}
+
+{% block header_extends %}
+    <link rel="stylesheet" type="text/css" href="{% static 'home.css'%}">
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    
+{% endblock %}
+
+{% block nav_system_active %}active{% endblock %}
+
+{% block report_left_title %}日期：{{start_date}}——{{end_date}}{% endblock %}
+{% block click_date_content %}
+<div class="panel panel-default">
+    <div class="panel-heading">{% block alert_right_title %}日期归档{% endblock %}</div>
+    <div class="panel-body">
+        <div id="container" ></div>
+        <script>
+                var options = {
+                    chart: { type: 'bar' },
+                    title: { text: null },
+                    xAxis: { categories: {{date_time|safe}},
+                             tickmarkPlacement:'on', },
+                    yAxis: { title: {text: null},
+                             labels:{ enabled:false},
+                             gridLineDashStyle: 'Dash', 
+                            },
+                    series: [{ name: '报告数量', data: {{date_count}} }],
+                    plotOptions:{
+                        line:{
+                            dataLabels:{
+                                enabled:true
+                            }
+                        }
+                    },
+                    legend: { enabled:false },
+                    credits: { enabled:false },
+                };
+                var chart = Highcharts.chart('container', options);
+        </script>
+    </div>
+</div>
+{% endblock %}

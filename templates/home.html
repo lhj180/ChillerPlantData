@@ -1,0 +1,177 @@
+{% extends 'blog_base.html' %}
+{% load staticfiles %}
+
+{% block title %}
+    我的网站|首页
+
+{% endblock %}
+
+{% block header_extends %}
+    <link rel="stylesheet" type="text/css" href="{% static 'home.css'%}">
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <meta http-equiv="refresh" content="60">
+{% endblock %}
+
+{% block nav_home_active %}active{% endblock %}
+{% block content %}
+    
+
+   
+    <div class="container">
+            
+        <div class="row">
+            <h3>最近30小时温度变化</h3> 
+            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading"><h3>{% block report_list_title %}室内外温度(℃){% endblock %}</h3></div>
+                    <div class="panel-body">
+                        {% for plant_name,report_list in report_all_dict.items %}
+                
+                            <div id="{{plant_name}}_t" ></div>
+
+                            <script>
+                                Highcharts.setOptions({
+                                chart: { type: 'line' },
+                                    
+                                    plotOptions:{
+                                        line:{
+                                            dataLabels:{
+                                                enabled:true
+                                            }
+                                        }
+                                    },
+                                    legend:{ borderWidth:1 },
+                                    credits: { enabled:false },
+                            });
+                                
+                                var {{plant_name}} = Highcharts.chart('{{plant_name}}_t', {
+                                    title: { text: '{{plant_name}}' },
+                                    xAxis: { title: {text: '时间(月/日/时)'}, 
+                                             categories: {{report_list.times|safe}},
+                                             tickmarkPlacement:'on', },
+                                    yAxis: { title: {text: '送回风温度(℃)'},
+                                             
+                                             gridLineDashStyle: 'Dash', 
+                                            },
+                                    series: [{ 
+                                        name: '室内温度', data: {{report_list.indoor_t|safe}} 
+                                    },{ 
+                                        name: '室外温度', data: {{report_list.outdoor_t|safe}} 
+                                    }],
+                                });
+                                
+                                {{plant_name}}.yAxis[0].addPlotLine({
+
+                                    value: {{report_list.average_in_t}} ,
+                                    color:'#00ff00',
+                                    width:2,
+                                    id:'plot-line-3',
+                                    dashStyle:'longdash',
+
+                                });
+                                {{plant_name}}.yAxis[0].addPlotLine({
+
+                                    value: {{report_list.average_out_t}} ,
+                                    color:'#00ff00',
+                                    width:2,
+                                    id:'plot-line-4',
+                                    dashStyle:'shortdot',
+
+                                });
+                                
+                            </script>
+                            &nbsp
+                            &nbsp
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="hidden-xs col-sm-6 col-md-6 col-lg-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading"><h3>{% block report_right_title %}送回风温度(℃){% endblock %}</h3></div>
+                    <div class="panel-body">
+                        {% for plant_name,report_list in report_all_dict.items %}
+                
+                            <div id="{{plant_name}}_p" ></div>
+
+                            <script>
+                                Highcharts.setOptions({
+                                chart: { type: 'line' },
+                                    
+                                    plotOptions:{
+                                        line:{
+                                            dataLabels:{
+                                                enabled:true
+                                            }
+                                        }
+                                    },
+                                    legend:{ borderWidth:1 },
+                                    credits: { enabled:false },
+                            });
+                                
+                                var {{plant_name}} = Highcharts.chart('{{plant_name}}_p', {
+                                    title: { text: '{{plant_name}}{{report_list.max_time}}' },
+                                    xAxis: { title: {text: '时间(月/日/时)'}, 
+                                             categories: {{report_list.times|safe}},
+                                             tickmarkPlacement:'on', },
+                                    yAxis: { title: {text: '送回风温度(℃)'},
+                                             
+                                             gridLineDashStyle: 'Dash', 
+                                            },
+                                    series: [{ 
+                                        name: '送风温度', data: {{report_list.supply_t|safe}} 
+                                    },{ 
+                                        name: '回风温度', data: {{report_list.return_t|safe}} 
+                                    }],
+                                });
+                                
+                                {{plant_name}}.yAxis[0].addPlotLine({
+
+                                    value: {{report_list.max_supply_t}} ,
+                                    color:'#ff0000',
+                                    width:2,
+                                    id:'plot-line-3',
+                                    dashStyle:'longdash',
+
+                                });
+                                {{plant_name}}.yAxis[0].addPlotLine({
+
+                                    value: {{report_list.max_return_t}} ,
+                                    color:'#ff0000',
+                                    width:2,
+                                    id:'plot-line-4',
+                                    dashStyle:'shortdot',
+
+                                });
+                                {{plant_name}}.yAxis[0].addPlotLine({
+
+                                    value: {{report_list.min_supply_t}} ,
+                                    color:'#003399',
+                                    width:2,
+                                    id:'plot-line-5',
+                                    dashStyle:'longdash',
+
+                                });
+                                {{plant_name}}.yAxis[0].addPlotLine({
+
+                                    value: {{report_list.min_return_t}} ,
+                                    color:'#003399',
+                                    width:2,
+                                    id:'plot-line-6',
+                                    dashStyle:'shortdot',
+
+                                });
+                                
+                            </script>
+                            &nbsp
+                            &nbsp
+                        {% endfor %} 
+                    </div>
+                </div>   
+            </div>
+        </div>
+    </div>
+    
+    
+{% endblock %}
